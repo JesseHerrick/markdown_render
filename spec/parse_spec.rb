@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Markdown do
   before do
-    @processors = [:kramdown, :redcarpet, :rdiscount, :gfm, :maruku]
+    @processors = [:kramdown, :redcarpet, :rdiscount, :gfm]
 
     def all_processors
       @processors.each do |processor|
