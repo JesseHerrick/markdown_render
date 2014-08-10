@@ -37,9 +37,6 @@ class Markdown
     when :gfm, :github, :github_markdown, 'gfm', 'github_markdown'
       require 'github/markdown'
       GitHub::Markdown.render(content)
-    when :maruku, 'maruku'
-      require 'maruku'
-      Maruku.new(content).to_html
     end
   end
 
