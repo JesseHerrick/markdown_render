@@ -35,4 +35,6 @@ Mercenary.program(:markdown_render) do |p|
       puts "processor: #{processor}"
     end
   end
+
+  p.default_command(:build)
 end
