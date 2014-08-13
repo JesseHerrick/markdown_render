@@ -5,7 +5,7 @@ require 'markdown_render/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "markdown_render"
-  spec.version       = MarkdownRender::VERSION
+  spec.version       = Markdown::VERSION
   spec.authors       = ["Jesse Herrick"]
   spec.email         = ["jessegrantherrick@gmail.com"]
   spec.summary       = %q{A themed markdown processor.}
@@ -18,6 +18,7 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
+  spec.add_runtime_dependency "mercenary"
   spec.add_runtime_dependency "kramdown"
   spec.add_runtime_dependency "redcarpet"
   spec.add_runtime_dependency "rdiscount"

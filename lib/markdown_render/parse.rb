@@ -46,7 +46,9 @@ module Markdown
 <html>
   <head>
     <title>Document</title>
-    <link rel="stylesheet" href="{{theme}}">
+    <style>
+    {{theme}}
+    </style>
   </head>
 
   <body>
@@ -55,9 +57,14 @@ module Markdown
 </html>
     TEXT
 
-    def to_document(content, title = 'Document')
+    def to_document(content)
+      theme_file = Dir['*theme.css'].first || 'nothing'
+      theme_fail = !File.exist?(theme_file)
+      theme = File.read(theme_file) unless theme_fail
+
       html = to_html(content)
-      HTML.gsub('{{content}}', html)
+      html = HTML.gsub('{{content}}', html)
+      html.gsub('{{theme}}', theme) unless theme_fail
     end
   end
 end
