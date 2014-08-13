@@ -3,10 +3,16 @@ require 'optparse'
 # render markdown from command line.
 options = {}
 parser = OptionParser.new do |opts|
-  opts.banner = "Usage: #{__FILE__} MARKDOWN_FILE [options]"
+  opts.banner = <<-BANNER
+Usage: markdown-render MARKDOWN_FILE [options]"
 
-  opts.on('-m', '--markdown MARKDOWN_PROCESSOR', "Select a markdown processor") do |processor|
-    raise 'No markdown processor given' if processor.nil?
+Example: 
+  markdown-render MARKDOWN_FILE -m kramdown
+  # => FILENAME.html
+  
+  BANNER
+
+  opts.on('-m', '--markdown PROCESSOR', "Select a markdown processor") do |processor|
     options[:markdown] = case processor
     when /kramdown/i then :kramdown
     when /redcarpet/i then :redcarpet
@@ -28,19 +34,17 @@ parser = OptionParser.new do |opts|
   end
 end
 
-parser.parse!
+parser.parse! # parse CLI
 
-=begin
-markdown = options[:markdown] || :redcarpet
-file = ARGV[0]
-raise "No markdown file." if file.nil?
+def parse_options
+markdown = options[:markdown] || :redcarpet # default to redcarpet if no markdown processor is given
+file = ARGV[0] # the [markdown] file given as a param
+raise "No markdown file." if file.nil? # 
 doc = Markdown.new(markdown).to_document(File.read(file))
 
-# TODO: write markdown to file
 html_filename = "#{file.split('.').first}.html"
-html_file = File.new(html_filename, 'w')
-
-html_file.write doc
-html_file.close
-=end
+html_file = File.open(html_filename, 'w') do |file|
+  file.write doc
+  file.close
+end
 
