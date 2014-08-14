@@ -23,6 +23,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "redcarpet"
   spec.add_runtime_dependency "rdiscount"
   spec.add_runtime_dependency "github-markdown"
+  spec.add_runtime_dependency "colorize"
 
   spec.add_development_dependency "bundler", "~> 1.6"
   spec.add_development_dependency "rake"

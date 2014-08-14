@@ -1,4 +1,5 @@
 require 'mercenary'
+require 'colorize'
 require 'markdown_render'
 
 Mercenary.program(:markdown_render) do |p|
@@ -21,8 +22,16 @@ Mercenary.program(:markdown_render) do |p|
       raise 'No Markdown file given.' if file.nil?
       raise 'Markdown file given does not exist.' unless File.exist?(file)
 
+      # find the theme
+      theme_file = Dir['*theme.css'].first || 'nothing'
+      begin
+        theme = File.read(theme_file)
+      rescue Errno::ENOENT
+        theme = ''
+      end
+
       # parse the markdown
-      parser = Markdown::Parse.new(processor)
+      parser = Markdown::Parse.new(processor, theme)
       html = parser.to_document File.read(file)
       md_filename = file.split('.').first + '.html'
       File.open(md_filename, 'w') do |file|
@@ -30,9 +39,9 @@ Mercenary.program(:markdown_render) do |p|
       end
 
       # some friendly output
-      print "#{file} => #{md_filename}"
-      puts " using #{Dir['*theme.css'].first || 'nothing'} as a theme"
-      puts "processor: #{processor}"
+      puts "#{file.green} => #{md_filename.green}"
+      puts "using #{theme_file.split('.').first.blue} as a theme"
+      puts "markdown processor: #{processor.to_s.red}"
     end
   end
 

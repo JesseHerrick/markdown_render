@@ -6,8 +6,9 @@ module Markdown
     #   - redcarpet
     #   - maruku
     #   - rdiscount
-    def initialize(parser)
+    def initialize(parser, theme = '')
       @parser = parser
+      @theme = theme
     end
 
     # takes markdown and returns html (as a string)
@@ -58,13 +59,9 @@ module Markdown
     TEXT
 
     def to_document(content)
-      theme_file = Dir['*theme.css'].first || 'nothing'
-      theme_fail = !File.exist?(theme_file)
-      theme = File.read(theme_file) unless theme_fail
-
       html = to_html(content)
       html = HTML.gsub('{{content}}', html)
-      html.gsub('{{theme}}', theme) unless theme_fail
+      html.gsub('{{theme}}', @theme)
     end
   end
 end
