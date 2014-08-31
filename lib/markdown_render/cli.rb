@@ -44,7 +44,7 @@ Mercenary.program(:markdown_render) do |p|
       parse_markdown processor, theme
       if options['watch']
         Listen.to(file) do |modified, added, removed|
-          puts "#{file} has been regenerated"
+          puts 'Markdown regenerated.'
           parse_markdown processor, theme
         end.start
       end
