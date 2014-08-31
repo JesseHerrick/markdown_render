@@ -1,6 +1,7 @@
 require 'mercenary'
 require 'colorize'
 require 'markdown_render'
+require 'listen'
 
 Mercenary.program(:markdown_render) do |p|
   p.version Markdown::VERSION
@@ -11,8 +12,8 @@ Mercenary.program(:markdown_render) do |p|
     c.syntax 'build <file> [options]'
     c.description 'Process the Markdown and write it to a file.'
 
-    # c.option 'theme', '-t THEME_NAME', '--theme THEME_NAME', 'Pass a theme to the processor.'
     c.option 'processor', '-p PROCESSOR', '--processor PROCESSOR', 'Specify a Markdown processor.'
+    c.option 'watch', '-w', '--watch', 'Watch the markdown file for changes.'
 
     c.action do |args, options|
       file = args.shift
@@ -31,17 +32,27 @@ Mercenary.program(:markdown_render) do |p|
       end
 
       # parse the markdown
-      parser = Markdown::Parse.new(processor, theme)
-      html = parser.to_document File.read(file)
-      md_filename = file.split('.').first + '.html'
-      File.open(md_filename, 'w') do |file|
-        file.write html
+      def parse_markdown(processor, theme)
+        parser = Markdown::Parse.new(processor, theme)
+        html = parser.to_document File.read(file)
+        md_filename = file.split('.').first + '.html'
+        File.open(md_filename, 'w') do |f|
+          f.write html
+        end
+      end
+
+      parse_markdown processor, theme
+      if options['watch']
+        Listen.to(file) do |modified, added, removed|
+          puts "#{file} has been regenerated"
+          parse_markdown processor, theme
+        end.start
       end
 
       # some friendly output
       puts "#{file.green} => #{md_filename.green}"
       puts "using #{theme_file.split('.').first.blue} as a theme"
-      puts "markdown processor: #{processor.to_s.red}"
+      puts "markdown processor: #{processor.to_s.yellow}"
     end
   end
 
